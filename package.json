@@ -21,6 +21,7 @@
   "homepage": "https://github.com/alura-cursos/alura-docs#readme",
   "dependencies": {
     "express": "^4.19.2",
+    "mogodb": "^0.0.1-security",
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
