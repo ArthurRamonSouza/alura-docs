@@ -1,9 +1,29 @@
-import websocket from "./server.js";
+const documents = [
+  {
+    name: "JavaScript",
+    text: "Texto armazenado no arquivo JavaScript.",
+  },
+  {
+    name: "Node",
+    text: "Texto armazenado no arquivo Node.",
+  },
+  {
+    name: "Socket.IO",
+    text: "Texto armazenado no arquivo Socket.IO.",
+  },
+];
+
+function recoverDocumentContent(documentName) {
+  documents.find((document) => {
+    return document.name === documentName;
+  });
+}
 
 websocket.on("connection", (socket) => {
   console.log("A user connected. Id: ", socket.id);
 
   socket.on("select-document", (documentName) => {
+    const documentContent = recoverDocumentContent(documentName);
     socket.join(documentName); //Grouping connections by document name
   });
 
