@@ -1,5 +1,5 @@
 import websocket from "./server.js";
-import { getDocuments, recoverDocument, updateDocument } from "./documentCollection.js";
+import { getDocuments, insertDocument, recoverDocument, updateDocument } from "./documentCollection.js";
 
 websocket.on("connection", (socket) => {
 
@@ -7,6 +7,20 @@ websocket.on("connection", (socket) => {
     const documents = await getDocuments();
     
     returnDocuments(documents);
+  });
+
+  socket.on("add_document", async (documentName) => {
+    const exists = await recoverDocument(documentName) !== null;
+
+    if (!exists) {
+      const inserted = await insertDocument(documentName);
+      
+      if (inserted.acknowledged) {
+        socket.emit("add_document_interface", documentName);
+      }
+    } else {
+      socket.emit("document_already_exists", documentName);
+    }
   });
 
   socket.on("select-document", async (documentName, returnText) => {

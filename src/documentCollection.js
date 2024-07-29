@@ -5,6 +5,15 @@ function getDocuments() {
     return documents;
 }
 
+function insertDocument(documentName) {
+    const result = documentsCollection.insertOne({
+        name: documentName,
+        text: "",
+    });
+
+    return result;
+}
+
 function recoverDocument(documentName) {
     return documentsCollection.findOne({
         name: documentName
@@ -22,4 +31,4 @@ function updateDocument(documentName, text) {
     });
 }
 
-export { recoverDocument, updateDocument, getDocuments }; 
+export { recoverDocument, updateDocument, getDocuments, insertDocument }; 
