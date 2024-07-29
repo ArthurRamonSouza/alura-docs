@@ -1,32 +1,12 @@
 import websocket from "./server.js";
-
-const documents = [
-  {
-    name: "JavaScript",
-    text: "Texto armazenado no arquivo JavaScript.",
-  },
-  {
-    name: "Node",
-    text: "Texto armazenado no arquivo Node.",
-  },
-  {
-    name: "Socket.IO",
-    text: "Texto armazenado no arquivo Socket.IO.",
-  },
-];
-
-function recoverDocumentContent(documentName) {
-  return documents.find((document) => {
-    return document.name === documentName;
-  });
-}
+import { recoverDocument, updateDocument } from "./documentCollection.js";
 
 websocket.on("connection", (socket) => {
   console.log("A user connected. Id: ", socket.id);
 
-  socket.on("select-document", (documentName, returnText) => {
+  socket.on("select-document", async (documentName, returnText) => {
     socket.join(documentName); //Grouping connections by document name
-    const document = recoverDocumentContent(documentName);
+    const document = await recoverDocument(documentName);
     const documentContent = document.text;
 
     if (documentContent) {
@@ -35,12 +15,10 @@ websocket.on("connection", (socket) => {
     }
   });
 
-  socket.on("write-text", ({ text, documentName }) => {
-    const document = recoverDocumentContent(documentName);
-    const documentContent = document.text;
+  socket.on("write-text", async ({ text, documentName }) => {
+    const updated = await updateDocument(documentName, text)
     
-    if (documentContent) {
-      document.text = text;
+    if (updated.modifiedCount) {
       socket.to(documentName).emit("receive-text", text); // Sending the text to all users connected to the document
       //io.to([nomeDocumento, "JavaScript"]).emit("texto_editor_clientes", texto); // Sending the text to all users connected to the document list, including the one who wrote it
       //io.except("sala3").emit("nome_do_evento");
