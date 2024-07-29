@@ -14,6 +14,12 @@ function insertDocument(documentName) {
     return result;
 }
 
+function deleteDocument(documentName) {
+    return documentsCollection.deleteOne({
+        name:documentName
+    });
+}
+
 function recoverDocument(documentName) {
     return documentsCollection.findOne({
         name: documentName
@@ -31,4 +37,4 @@ function updateDocument(documentName, text) {
     });
 }
 
-export { recoverDocument, updateDocument, getDocuments, insertDocument }; 
+export { recoverDocument, updateDocument, getDocuments, insertDocument, deleteDocument }; 

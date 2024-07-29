@@ -1,4 +1,4 @@
-import { updateText } from "./document.js";
+import { alertAndRedirect, updateText } from "./document.js";
 
 const socket = io();
 
@@ -8,12 +8,16 @@ function selectDocument(documentName) {
   });
 }
 
-function emmitText(data) {
+function emitText(data) {
   socket.emit("write-text", data);
 }
 
 socket.on("receive-text", (text) => {
   updateText(text);
+});
+
+socket.on("deleted_document_alert", (documentName) => {
+  alertAndRedirect(documentName);
 });
 
 // socket.on("recovering-text", (text) => {
@@ -25,4 +29,8 @@ socket.on("disconnect", (message) => {
     Message: ${message}`);
 });
 
-export { emmitText, selectDocument };
+function emitDeleteDocument(documentName) {
+  socket.emit("delete_document", documentName);
+}
+
+export { emitText, selectDocument, emitDeleteDocument };

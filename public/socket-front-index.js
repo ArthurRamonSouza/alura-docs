@@ -21,4 +21,8 @@ socket.on("document_already_exists", (documentName) => {
   alert(`Documento ${documentName} já existe.`);
 });
 
+socket.on("deleted_document_aler", (documentName) => {
+  deleteDocumentLink(documentName);
+});
+
 export { addDocument };

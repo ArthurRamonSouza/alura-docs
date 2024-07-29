@@ -1,5 +1,6 @@
 import websocket from "./server.js";
-import { getDocuments, insertDocument, recoverDocument, updateDocument } from "./documentCollection.js";
+import { deleteDocument, getDocuments, insertDocument, recoverDocument, updateDocument } from "./documentCollection.js";
+import { emitDeleteDocument } from "../public/socket-front-document.js";
 
 websocket.on("connection", (socket) => {
 
@@ -41,6 +42,14 @@ websocket.on("connection", (socket) => {
       socket.to(documentName).emit("receive-text", text); // Sending the text to all users connected to the document
       //io.to([nomeDocumento, "JavaScript"]).emit("texto_editor_clientes", texto); // Sending the text to all users connected to the document list, including the one who wrote it
       //io.except("sala3").emit("nome_do_evento");
+    }
+  });
+
+  socket.on("delete_document", async (documentName) => {
+    const deleted = await deleteDocument(documentName);
+
+    if (deleted.deletedCount) {
+      socket.emit("deleted_document_alert", documentName);
     }
   });
 
