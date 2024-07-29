@@ -1,8 +1,13 @@
 import websocket from "./server.js";
-import { recoverDocument, updateDocument } from "./documentCollection.js";
+import { getDocuments, recoverDocument, updateDocument } from "./documentCollection.js";
 
 websocket.on("connection", (socket) => {
-  console.log("A user connected. Id: ", socket.id);
+
+  socket.on("get_documents", async (returnDocuments) => {
+    const documents = await getDocuments();
+    
+    returnDocuments(documents);
+  });
 
   socket.on("select-document", async (documentName, returnText) => {
     socket.join(documentName); //Grouping connections by document name

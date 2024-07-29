@@ -21,4 +21,5 @@ httpServer.listen(port, () => {
 });
 
 const websocket = new Server(httpServer); // Create a websocket server
+
 export default websocket;
